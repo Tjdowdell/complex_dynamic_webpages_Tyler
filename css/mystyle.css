@@ -93,6 +93,8 @@ a:active{
 	margin-bottom:10px;
 	margin-top:-5px;
 	clear:both;
+	overflow-y:scroll;
+	max-height:500px;
 }
 #mainContent2{	
 	width:600px;
@@ -323,7 +325,26 @@ h3 {
  .td {
 	vertical-align:top; 
  }
-
+.email-table{
+	width:100%;
+	border: 1px solid #000;
+ }
+ .email-table thead{
+	padding:10px;
+	margin-left:3px;
+	border: 1px solid #000;
+	background-color: #aaa
+	
+ }
+ 
+ .email-table tr{
+ height: 50px;
+ width: 100%
+ }
+ .email-table td{
+ height: 50px;
+ width: 50%
+ }
 
  					/*Tablet Responsive*/
 					

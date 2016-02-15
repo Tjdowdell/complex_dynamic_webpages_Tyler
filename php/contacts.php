@@ -1,4 +1,57 @@
-<!doctype html>
+<?php
+$nameErr = $emailErr ="";
+$error = false;
+/*$name = $_POST["name"];
+$email = $_POST["email"];*/
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+	if (empty($_POST["name"])) {
+		$nameErr = "Name is required";
+		$error  = true;
+	} else {
+		$name = test_input($_POST["name"]);
+			if (!preg_match("/^[a-zA-Z0-9 ]*$/", $name)) {
+				$nameErr = "Only Letters, numbers and white space allowed";
+				$error  = true;
+			}
+	}
+	if (empty($_POST["email"])) {
+		$emailErr = "Email is required";
+		$error = true;
+	} else {
+		$email = test_input($_POST["email"]);
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+				$emailErr = "Invalid email format";
+				$error = true;
+			}
+	}
+
+if (!$error) {
+include('connect.php');
+
+$queryadd = "INSERT INTO `mailinglist`.`customers` (`Customer_ID`, `Name`, `Email`) VALUES (NULL, '$name', '$email');";
+
+$updatedb = mysqli_query($con,$queryadd);
+
+mysqli_close($con);
+
+if ($updatedb) {
+echo "You have added " . $name . " with email: " . $email . "to the database";
+} else {
+echo "Info not added to database";
+}
+
+}
+}
+
+function test_input($data) {
+	$data = trim($data);
+	$data = stripslashes($data);
+	$data = htmlspecialchars($data);
+	return $data;
+}
+?>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
@@ -52,9 +105,9 @@
 		</ul></li>
 		<li><a href="../pages/processes.html">Our Processes </a></li>
 	<li><a href="../pages/testimonials.html">Testimonials</a></li>
-	<li><a href="../pages/contacts.html">Contact Us &#65516;</a>
+	<li><a href="../php/contacts.php">Contact Us &#65516;</a>
     <ul class="hidden">
-    <li><a href="../pages/login.html">Login</a></li>
+    <li><a href="../php/login.php">Login</a></li>
   		</ul></li>
         </ul>
 </div>
@@ -80,16 +133,16 @@
         <a  href="https://greatstartgrant.osr.qld.gov.au/quick-calculate.php" target="_blank" ><img class="displayed"  src="../images/loan.jpg" alt="Loan Calculator" height="130" width="180"></a>
 </div>
 <div id="contact">
-	<form name="htmlform" method="post" action="html_form_send.php">
+	<form name="htmlform" method="post" >
       <label>Name *</label>
    <br/>
       	<input  type="text" name="name" maxlength="50" size="40">
-   <br/> <br/>
+   <br/> <?php echo $nameErr; ?><br/>
      
       <label>Email *</label>
    <br/>
      	 <input  type="text" name="email" maxlength="80" size="40">
-   <br/> <br/>
+   <br/> <?php echo $emailErr; ?><br/>
      
       	<input type="submit" value=" Add to Mailing List ">
 	</form>

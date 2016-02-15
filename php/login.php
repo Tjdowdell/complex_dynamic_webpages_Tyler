@@ -1,15 +1,29 @@
 <?php
+$message = "<p></p>";
+$name = $password = "";
 
-session_start();
-if (!isset($_SESSION['username'])) {
-	header('location:../php/login.php');
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	$name = test_input($_POST['name']);
+	$password = md5($_POST['password']);
+	
+	include('connect.php');
+	
+	$query = "SELECT * FROM `users` WHERE `username` = '$name' and `password` = '$password';";
+	$result = mysqli_query($con, $query);
+	
+	if(mysqli_num_rows($result)==1) {
+		session_start();
+		$_SESSION['name']='loggedIn';
+	}
+	
 }
 
-echo "this is the session variable " . $_SESSION['wrongusername'];
-
-if (!$_SESSION['wrongusername'] || !$_SESSION['wrongemail']) {
-	$_SESSION ['wrongusername'] = "";
-	$_SESSION ['wrongemail'] = "";
+function test_input($data) {
+	$data = trim($data);
+	$data = stripslashes($data);
+	$data = htmlspecialchars($data);
+	return $data;
 }
 
 ?>
@@ -23,35 +37,22 @@ if (!$_SESSION['wrongusername'] || !$_SESSION['wrongemail']) {
 <link rel="shortcut icon" href="../images/icon.ico">
 <link href="../css/mystyle.css" rel="stylesheet" type="text/css">
 <link href="../css/navigation.css" rel="stylesheet" type="text/css">
-<link href="../css/animate.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
 integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
 crossorigin="anonymous">
-<!-- Optional theme -->
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
 integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
 crossorigin="anonymous">
-<!-- Latest compiled and minified JavaScript -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
 integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" 
-crossorigin="anonymous"></script>
+crossorigin="anonymous"></script>-->
 
-<script type="text/javascript">
-
-      var currentTime = new Date().getHours();
-      if (0 <= currentTime&&currentTime < 6) {
-       document.write("<link rel='stylesheet' href='../css/night.css' type='text/css'>");
-      }
-      if (6 <= currentTime&&currentTime <18) {
-       document.write("<link rel='stylesheet' href='../css/mystyle.css' type='text/css'>");
-      }
-	  if (18 <= currentTime&&currentTime < 24) {
-       document.write("<link rel='stylesheet' href='../css/night.css' type='text/css'>");
-      }
-</script>
-<noscript><link href="../css/mystyle.css" rel="stylesheet"></noscript>
 </head>
 <body>
+<a href = "logout.php" class = "btn btn-danger" style = "position: absolute; top: 5px; right: 5px"> Logout </a>
 	<div id="wrapper">
     <div id="headerwrapper">
 	<div id="leftHeader">
@@ -69,7 +70,7 @@ crossorigin="anonymous"></script>
 	<li><a href="../index.html">Home</a></li>
    	<li><a href="../pages/about.html">About Us &#65516;</a>
         <ul class="hidden">
-		<li><a href="../pages/faqs.html">FAQ</a></li>
+		<li><a href="../pages/faq.html">FAQ</a></li>
         </ul></li>
 		<li><a href="../pages/designs.html">Designs &#65516;</a>
 		<ul class="hidden">
@@ -88,18 +89,48 @@ crossorigin="anonymous"></script>
 		<div id="mainContent">
         <h3>Welcome to AllStyle Homes - Login</h3>
         <div id="login">
-	<form name="htmlform" method="post" action="html_form_send.php">
+	<form name="htmlform" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
       <label>Username</label>
    <br/>
-      	<input  type="text" name="username" maxlength="50" size="40">
+      	<input  type="text" name="name" maxlength="50" size="40">
    <br/> <br/>
       <label>Password</label>
    <br/>
-      	<input type="password" name="password" maxlength="50" size="40">
+      	<input  type="password" name="password" maxlength="50" size="40">
    <br/> <br/>
-      	<input type="submit" value=" Log In " class="animation">
+     
+      	<input type="submit" value=" Log In ">
 	</form>
     </div>
+
+	<?php
+	if (isset($_SESSION['name'])){
+	
+	echo "<table class='email-table'>
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>";
+		
+		$query = "SELECT * FROM `customers`";
+		include('connect.php');
+		$result = mysqli_query($con, $query);
+		
+		while ($row = mysqli_fetch_assoc($result)) {
+			echo "<tr> <td>" . $row['Name'] . "</td>";
+			echo "<td>" . $row ['Email'] . "</td></tr>";
+		}
+		
+		echo "</tbody>
+		</table>";
+		
+	}
+	
+	?>
+	
 			</div>
         
         <div id="sidebar">
