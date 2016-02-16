@@ -1,8 +1,10 @@
 <?php
 $message = "<p></p>";
 $name = $password = "";
-
-
+session_start();
+if (!isset($_SESSION['deleted'])){
+$_SESSION['deleted'] = "<p></p>";
+}
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$name = test_input($_POST['name']);
 	$password = md5($_POST['password']);
@@ -13,8 +15,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$result = mysqli_query($con, $query);
 	
 	if(mysqli_num_rows($result)==1) {
-		session_start();
+		
 		$_SESSION['name']='loggedIn';
+		
 	}
 	
 }
@@ -28,7 +31,7 @@ function test_input($data) {
 
 ?>
 
-<!doctype html>
+
 <html>
 <head>
 <meta charset="utf-8">
@@ -37,18 +40,7 @@ function test_input($data) {
 <link rel="shortcut icon" href="../images/icon.ico">
 <link href="../css/mystyle.css" rel="stylesheet" type="text/css">
 <link href="../css/navigation.css" rel="stylesheet" type="text/css">
-
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
-integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
-crossorigin="anonymous">
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" 
-integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" 
-crossorigin="anonymous">
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
-integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" 
-crossorigin="anonymous"></script>-->
+<link href="../css/animate.css" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -80,9 +72,9 @@ crossorigin="anonymous"></script>-->
 		</ul></li>
 		<li><a href="../pages/processes.html">Our Processes </a></li>
 	<li><a href="../pages/testimonials.html">Testimonials</a></li>
-	<li><a href="../pages/contacts.html">Contact Us &#65516;</a>
+	<li><a href="../php/contacts.php">Contact Us &#65516;</a>
     <ul class="hidden">
-    <li><a href="../pages/login.html">Login</a></li>
+    <li><a href="../php/login.php">Login</a></li>
   		</ul></li>
         </ul>
 </div>
@@ -99,7 +91,24 @@ crossorigin="anonymous"></script>-->
       	<input  type="password" name="password" maxlength="50" size="40">
    <br/> <br/>
      
-      	<input type="submit" value=" Log In ">
+      	<input type="submit" value=" Log In " onclick="buttonAnimate()"class="" id="button">
+	</form>
+	<br/>
+	<form action="../php/removeFromDB.php" method="post">
+	<?php 
+		if (isset($_SESSION['name'])) {
+			echo "<h3>Remove Customer From Database</h3>
+		<label>Email</label>
+		<br/>
+		<input type='text' name='email' placeholder='Enter Email'>
+		<br/> <br/>
+		<input type='submit' value=' Remove from database '>
+		<br/>";
+		}
+		echo $_SESSION['deleted'];
+		?>
+		
+		
 	</form>
     </div>
 
@@ -146,5 +155,12 @@ crossorigin="anonymous"></script>-->
 		<div id="footer"><p>&copy; AllStyle Homes  2015
 			<a href="pages/privacy.html"><span class="footer">Copyright and Privacy</span></a></p></div>
             </div>
+		
+			<script>
+			function buttonAnimate() {
+				document.getElementById("button").style.background = "green";
+			}
+			</script>
+			
 	</body>
 </html>

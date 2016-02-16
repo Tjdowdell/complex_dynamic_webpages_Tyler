@@ -144,7 +144,7 @@ function test_input($data) {
      	 <input  type="text" name="email" maxlength="80" size="40">
    <br/> <?php echo $emailErr; ?><br/>
      
-      	<input type="submit" value=" Add to Mailing List ">
+      	<input type="submit" value=" Add to Mailing List " onclick="buttonAnimate()" class="" id="button" >
 	</form>
 </div>
 <div id="MyGmaps">
@@ -187,5 +187,11 @@ function test_input($data) {
 		<div id="footer"><p>&copy; AllStyle Homes  2015
 			<a href="pages/privacy.html"><span class="footer">Copyright and Privacy</span></a></p></div>
         </div>
+		
+		<script>
+			function buttonAnimate() {
+				document.getElementById("button").style.background = "green";
+			}
+			</script>
  	</body>  	
 </html>
